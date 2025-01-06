@@ -1,8 +1,8 @@
 "use client";
 
 import { createNote } from "@/actions/createNote";
+import { Note } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import {
@@ -12,45 +12,49 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "../ui/drawer";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
-interface ICreateNoteProps {}
+interface IEditNoteProps {
+  note: Note | null;
+  open: boolean;
+  onclose: () => void;
+}
 
-type TCreateNoteInputs = {
+type TEditNoteInputs = {
   title: string;
   content: string;
 };
 
-export default function CreateNote({}: ICreateNoteProps) {
-  const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
+export default function EditNote({ note, onclose, open }: IEditNoteProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<TCreateNoteInputs>();
-
+    setValue,
+  } = useForm<TEditNoteInputs>({
+    values: {
+      content: note?.title ?? "",
+      title: note?.content ?? "",
+    },
+  });
   const router = useRouter();
-
-  const onSubmit: SubmitHandler<TCreateNoteInputs> = async (data) => {
+  const onSubmit: SubmitHandler<TEditNoteInputs> = async (data) => {
     const res = await createNote(data);
-    setDrawerIsOpen(false);
     reset();
     router.refresh();
   };
-
   return (
     <>
       <Drawer
-        open={drawerIsOpen}
-        onOpenChange={(open) => setDrawerIsOpen(open)}
+        defaultOpen={false}
+        open={open}
+        onOpenChange={(open) => {
+          onclose();
+        }}
       >
-        <DrawerTrigger asChild onClick={() => setDrawerIsOpen(true)}>
-          <Button>Create note</Button>
-        </DrawerTrigger>
         <DrawerContent>
           <div className="mx-auto w-full max-w-sm">
             <DrawerHeader>
@@ -64,7 +68,6 @@ export default function CreateNote({}: ICreateNoteProps) {
               {errors.title && (
                 <p className="text-xs text-red-500">{errors.title?.message}</p>
               )}
-
               <Textarea
                 className="h-72"
                 {...register("content", { required: "Required" })}

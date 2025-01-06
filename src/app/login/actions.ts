@@ -10,6 +10,19 @@ type TJwt = {
   iat: number;
 };
 
+export const fetchUser = async (id: string) => {
+  const user = await prisma.user.findFirst({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!user) {
+    throw new Error("user not found");
+  }
+  return user;
+};
+
 export const login = async (body: { email: string; password: string }) => {
   const user = await prisma.user.findFirst({
     where: {
