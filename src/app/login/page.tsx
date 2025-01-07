@@ -39,7 +39,7 @@ export default function page() {
   };
 
   return (
-    <div className="h-full w-full min-h-screen flex items-center justify-center">
+    <div className="h-full w-full flex items-center justify-center">
       <form className="w-96 flex flex-col gap-3 m-5" onSubmit={handleLogin}>
         <Input
           type="email"
