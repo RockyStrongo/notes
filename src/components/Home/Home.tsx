@@ -13,16 +13,19 @@ export default function Home({ notes }: IHomeProps) {
 
   return (
     <div className="h-full w-full grid grid-rows-[1fr_auto]">
-      <div className="overflow-y-auto p-5 flex grow flex-col gap-4">
+      <div className="overflow-y-auto p-5 md:p-10 flex grow flex-col gap-4">
         {notes.length > 0 ? (
           notes.map((note) => (
-            <div
+            <button
               key={note.id}
-              className="w-full p-2 bg-white shadow-lg rounded-lg"
+              className="w-full p-2 bg-white shadow-lg rounded-lg flex flex-col"
               onClick={() => setOpenNote(note)}
             >
-              {note.title} - {note.createdAt.toLocaleDateString()}
-            </div>
+              {note.title}
+              <span className="text-xs text-gray-500">
+                {note.createdAt.toLocaleDateString()}
+              </span>
+            </button>
           ))
         ) : (
           <p>No notes yet</p>
@@ -36,7 +39,6 @@ export default function Home({ notes }: IHomeProps) {
       <div className="w-full flex justify-center p-4">
         <CreateNote />
       </div>
-      {JSON.stringify(openNote)}
     </div>
   );
 }

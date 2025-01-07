@@ -19,6 +19,7 @@ export const createNote = async (body: { title: string; content: string }) => {
       title: body.title,
       content: body.content,
       userId: userId,
+      updatedAt: new Date(),
     },
   });
 };

@@ -15,6 +15,7 @@ import {
 } from "../ui/drawer";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { editNote } from "@/actions/editNote";
 
 interface IEditNoteProps {
   note: Note | null;
@@ -33,17 +34,19 @@ export default function EditNote({ note, onclose, open }: IEditNoteProps) {
     handleSubmit,
     formState: { errors },
     reset,
-    setValue,
   } = useForm<TEditNoteInputs>({
     values: {
-      content: note?.title ?? "",
-      title: note?.content ?? "",
+      content: note?.content ?? "",
+      title: note?.title ?? "",
     },
   });
   const router = useRouter();
   const onSubmit: SubmitHandler<TEditNoteInputs> = async (data) => {
-    const res = await createNote(data);
-    reset();
+    if (!note) {
+      return;
+    }
+    editNote(note.id, data);
+    onclose();
     router.refresh();
   };
   return (
@@ -58,7 +61,7 @@ export default function EditNote({ note, onclose, open }: IEditNoteProps) {
         <DrawerContent>
           <div className="mx-auto w-full max-w-sm">
             <DrawerHeader>
-              <DrawerTitle>Create a note</DrawerTitle>
+              <DrawerTitle></DrawerTitle>
             </DrawerHeader>
             <form
               onSubmit={handleSubmit(onSubmit)}
