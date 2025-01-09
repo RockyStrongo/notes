@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  const protectedRoutes = ["/"];
+  const protectedRoutes = ["/", "create-demo-user"];
 
   if (!protectedRoutes.includes(request.nextUrl.pathname)) {
     return;
